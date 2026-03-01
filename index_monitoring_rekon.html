@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT MODERN -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= BASE ================= */
+
+body{
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:#f1f5f9;
+  margin:0;
+  padding:18px;
+  color:#1e293b;
+}
+
+.container{
+  background:white;
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+/* ================= HEADER ================= */
+
+.title-center{
+  text-align:center;
+  margin-bottom:8px;
+}
+
+.title-center h2{
+  margin:0;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+
+.subtitle{
+  color:#64748b;
+  margin-top:4px;
+  font-size:14px;
+}
+
+#spjBtn{
+  height:44px;
+  border-radius:12px;
+  background:#8b5cf6;
+  color:white;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+#spjBtn:hover{
+  background:#7c3aed;
+}
+
+/* ================= FILTER ================= */
+
+.filter{
+  display:grid;
+  grid-template-columns:130px 1fr 1fr 1fr 260px 120px 160px;
+  gap:14px;
+  margin-top:20px;
+  margin-bottom:22px;
+  padding:18px;
+  backdrop-filter: blur(8px);
+  background:rgba(255,255,255,.75);
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+}
+
+.filter select,
+.filter input{
+  height:44px;
+  border-radius:12px;
+  border:1px solid #cbd5e1;
+  padding:0 14px;
+  font-size:14px;
+  background:#ffffff;
+  transition:.2s;
+}
+
+.filter select:focus,
+.filter input:focus{
+  border-color:#3b82f6;
+  box-shadow:0 0 0 3px rgba(59,130,246,.2);
+  outline:none;
+}
+
+#refreshBtn{
+  height:44px;
+  border-radius:12px;
+  background:#3b82f6;
+  color:white;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+#refreshBtn:hover{background:#2563eb}
+
+/* ================= STATS ================= */
+
+.stats{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap:16px;
+  margin-bottom:22px;
+}
+
+.card{
+  background:linear-gradient(135deg,#ffffff,#f8fafc);
+  padding:18px;
+  border-radius:14px;
+  text-align:center;
+  border:1px solid #e2e8f0;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 24px rgba(0,0,0,.12);
+}
+
+.big{
+  font-size:28px;
+  font-weight:700;
+  color:#0f172a;
+}
+
+.card:nth-child(1){border-left:6px solid #3b82f6;}
+.card:nth-child(2){border-left:6px solid #8b5cf6;}
+.card:nth-child(3){border-left:6px solid #22c55e;}
+.card:nth-child(4){border-left:6px solid #f59e0b;}
+
+/* ================= TABLE ================= */
+
+.table-wrap{
+  overflow:auto;
+  max-height:540px;
+  border-radius:14px;
+  border:1px solid #e2e8f0;
+  background:white;
+}
+
+table{
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:1200px;
+}
+
+th,td{
+  border:1px solid #e2e8f0;
+  padding:8px 10px;
+  white-space:nowrap;
+  text-align:center;
+  font-size:13px;
+}
+
+/* HEADER */
+th{
+  background:linear-gradient(180deg,#334155,#1e293b);
+  color:#f8fafc;
+  position:sticky;
+  top:0;
+  z-index:20;
+  font-weight:600;
+  letter-spacing:.3px;
+}
+
+/* ZEBRA */
+tbody tr:nth-child(even){
+  background:#f8fafc;
+}
+
+tbody tr:hover{
+  background:#e0f2fe;
+  transition:.15s;
+}
+
+/* FREEZE LEFT */
+.sticky{
+  position:sticky;
+  color:white;
+}
+
+.col-op{ left:0; background:#334155; min-width:130px; z-index:40;}
+.col-nama{ left:130px; background:#334155; min-width:210px; z-index:40;}
+.col-customer{ left:340px; background:#475569; min-width:260px; z-index:40;}
+.col-produk{ left:600px; background:#475569; min-width:140px; z-index:40;}
+.col-toh{ left:740px; background:#64748b; min-width:160px; z-index:40;}
+
+.text-left{ text-align:left !important; padding-left:14px;}
+
+/* STATUS ICON */
+
+.rekon,.non,.tidak{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:22px;
+  font-weight:700;
+  font-size:12px;
+  border-radius:50%;
+}
+
+.rekon{
+  background:#22c55e;
+  color:white;
+  box-shadow:0 0 0 3px rgba(34,197,94,.25);
+}
+
+.non{
+  background:#f59e0b;
+  color:white;
+  box-shadow:0 0 0 3px rgba(245,158,11,.25);
+}
+
+.tidak{
+  background:#e2e8f0;
+  color:#64748b;
+}
+
+/* BARIS BERMASALAH */
+.row-warning{
+  background:#fff7ed !important;
+}
+.row-warning:hover{
+  background:#ffedd5 !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="title-center">
+  <h2>MONITORING REKON HARIAN BITRANS</h2>
+  <div class="subtitle">
+    Periode: <span id="periode"></span>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    Last Update: <span id="lastUpdate">-</span>
+  </div>
+</div>
+
+<div class="filter">
+  <select id="month"></select>
+  <select id="customer"><option value="ALL">Semua Customer</option></select>
+  <select id="op"><option value="ALL">Semua OP</option></select>
+  <select id="produk"><option value="ALL">Semua Produk</option></select>
+  <input id="search" placeholder="Cari OP / Customer / TOH / Produk / Status">
+  <button id="refreshBtn" onclick="refreshData()">🔄 Refresh</button>
+  <button id="spjBtn" onclick="goToSPJ()">📋 Dashboard SPJ</button>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="table-wrap">
+  <div id="monitor"></div>
+</div>
+
+</div>
+
+<script>
+
+let rawData=[];
+
+google.script.run.withSuccessHandler(init).getMonitoringData();
+
+function init(res){
+  rawData=res.monitoring||[];
+  lastUpdate.innerText=res.lastUpdate||"-";
+  buildFilters();
+  render();
+}
+
+/* FILTERS */
+
+function buildFilters(){
+  month.innerHTML="";
+  customer.innerHTML="<option value='ALL'>Semua Customer</option>";
+  op.innerHTML="<option value='ALL'>Semua OP</option>";
+  produk.innerHTML="<option value='ALL'>Semua Produk</option>";
+
+  const months=[...new Set(rawData.map(x=>x.month))].sort().reverse();
+  months.forEach(m=>month.add(new Option(m,m)));
+  periode.innerText=month.value;
+
+  [...new Set(rawData.map(x=>x.customer))].sort()
+    .forEach(c=>customer.add(new Option(c,c)));
+
+  const opMap={};
+  rawData.forEach(r=>{ if(!opMap[r.op]) opMap[r.op]=r.namaop; });
+
+  Object.entries(opMap)
+    .sort((a,b)=>a[1].localeCompare(b[1]))
+    .forEach(([k,n])=>op.add(new Option(n,k)));
+
+  [...new Set(rawData.map(x=>x.produk))].sort()
+    .forEach(p=>produk.add(new Option(p,p)));
+
+  month.onchange=render;
+  customer.onchange=render;
+  op.onchange=render;
+  produk.onchange=render;
+  search.oninput=render;
+}
+
+/* FILTER DATA */
+
+function getData(){
+
+  let d=rawData.filter(x=>x.month===month.value);
+
+  if(customer.value!=="ALL") d=d.filter(x=>x.customer===customer.value);
+  if(op.value!=="ALL") d=d.filter(x=>x.op===op.value);
+  if(produk.value!=="ALL") d=d.filter(x=>x.produk===produk.value);
+
+  const k=search.value.toLowerCase();
+
+  if(k)
+    d=d.filter(x=>
+      x.op.toLowerCase().includes(k)||
+      x.namaop.toLowerCase().includes(k)||
+      x.customer.toLowerCase().includes(k)||
+      x.toh.toLowerCase().includes(k)||
+      x.produk.toLowerCase().includes(k)||
+      x.status.toLowerCase().includes(k)
+    );
+
+  return d;
+}
+
+/* RENDER */
+
+function render(){
+
+  const data=getData();
+  periode.innerText=month.value;
+
+  const rows=[...new Set(data.map(x=>x.op+"||"+x.customer+"||"+x.produk))];
+  const days=[...new Set(data.map(x=>parseInt(x.day)))].sort((a,b)=>a-b);
+
+  let html="<table><tr>";
+  html+="<th class='sticky col-op'>Kode OP</th>";
+  html+="<th class='sticky col-nama'>Nama OP</th>";
+  html+="<th class='sticky col-customer'>Customer</th>";
+  html+="<th class='sticky col-produk'>Produk</th>";
+  html+="<th class='sticky col-toh'>TOH</th>";
+  days.forEach(d=>html+="<th>"+d+"</th>");
+  html+="</tr>";
+
+  rows.forEach(key=>{
+
+    const [opVal,custVal,prodVal]=key.split("||");
+    const first=data.find(x=>x.op===opVal && x.customer===custVal && x.produk===prodVal);
+
+    let hasNon=data.some(r=>r.op===opVal && r.customer===custVal && r.produk===prodVal && r.status!=="Rekon");
+
+    html+=`<tr class="${hasNon?'row-warning':''}">`;
+    html+=`<td class='sticky col-op text-left'>${opVal}</td>`;
+    html+=`<td class='sticky col-nama text-left'>${first.namaop}</td>`;
+    html+=`<td class='sticky col-customer text-left'>${custVal}</td>`;
+    html+=`<td class='sticky col-produk text-left'>${prodVal}</td>`;
+    html+=`<td class='sticky col-toh text-left'>${first.toh}</td>`;
+
+    days.forEach(day=>{
+      const r=data.find(x=>x.op===opVal && x.customer===custVal && x.produk===prodVal && parseInt(x.day)===day);
+      if(!r) html+="<td><span class='tidak'>–</span></td>";
+      else if(r.status==="Rekon") html+="<td><span class='rekon'>✔</span></td>";
+      else html+="<td><span class='non'>!</span></td>";
+    });
+
+    html+="</tr>";
+  });
+
+  html+="</table>";
+  monitor.innerHTML=html;
+
+  updateStats(data);
+}
+
+/* STATS */
+
+function updateStats(d){
+  const totalOP=[...new Set(d.map(x=>x.op))].length;
+  const totalCustomer=[...new Set(d.map(x=>x.customer))].length;
+  const rekon=d.filter(x=>x.status==="Rekon").length;
+  const non=d.filter(x=>x.status!=="Rekon").length;
+
+  stats.innerHTML=
+  `<div class='card'><div class='big'>${totalOP}</div>Total OP</div>
+   <div class='card'><div class='big'>${totalCustomer}</div>Total Customer</div>
+   <div class='card'><div class='big'>${rekon}</div>Rekon</div>
+   <div class='card'><div class='big'>${non}</div>Non Rekon</div>`;
+}
+
+function refreshData(){
+  refreshBtn.disabled=true;
+  refreshBtn.innerText="⏳ Loading...";
+  google.script.run.withSuccessHandler(function(res){
+    rawData=res.monitoring||[];
+    lastUpdate.innerText=res.lastUpdate||"-";
+    buildFilters();
+    render();
+    refreshBtn.disabled=false;
+    refreshBtn.innerText="🔄 Refresh";
+  }).getMonitoringData();
+}
+
+function goToSPJ(){
+  window.location.href = "https://script.google.com/macros/s/AKfycbzRYe2M1V7885vQBrrffUDTiMjyIsrzhsAkNByK0Z6iWNrlmdZ2ycBIgIdgFov3-RZ7/exec";
+}
+
+</script>
+
+</body>
+</html>
