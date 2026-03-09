@@ -63,48 +63,78 @@ body{
 
 /* ================= FILTER ================= */
 
-.filter{
-  display:grid;
-  grid-template-columns:130px 1fr 1fr 1fr 260px 120px 160px;
-  gap:14px;
-  margin-top:20px;
-  margin-bottom:22px;
-  padding:18px;
+/* ================= FILTER ================= */
+.filter {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 22px;
+  padding: 18px;
   backdrop-filter: blur(8px);
-  background:rgba(255,255,255,.75);
-  border:1px solid #e2e8f0;
-  border-radius:14px;
+  background: rgba(255,255,255,.75);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  align-items: center;
 }
 
+/* Semua elemen dalam filter menggunakan lebar penuh */
 .filter select,
-.filter input{
-  height:44px;
-  border-radius:12px;
-  border:1px solid #cbd5e1;
-  padding:0 14px;
-  font-size:14px;
-  background:#ffffff;
-  transition:.2s;
+.filter input,
+#refreshBtn,
+#spjBtn {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  padding: 0 14px;
+  font-size: 14px;
+  background: #ffffff;
+  transition: .2s;
+  width: 100%;
+  box-sizing: border-box; /* agar padding tidak menambah lebar */
 }
 
 .filter select:focus,
-.filter input:focus{
-  border-color:#3b82f6;
-  box-shadow:0 0 0 3px rgba(59,130,246,.2);
-  outline:none;
+.filter input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.2);
+  outline: none;
 }
 
-#refreshBtn{
-  height:44px;
-  border-radius:12px;
-  background:#3b82f6;
-  color:white;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-  transition:.2s;
+#refreshBtn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
 }
-#refreshBtn:hover{background:#2563eb}
+#refreshBtn:hover { background: #2563eb; }
+
+#spjBtn {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+#spjBtn:hover { background: #7c3aed; }
+
+/* ================= MEDIA QUERIES ================= */
+/* Untuk layar kecil (mobile) */
+@media screen and (max-width: 600px) {
+  .filter {
+    grid-template-columns: 1fr; /* Satu kolom */
+    gap: 8px;
+    padding: 12px;
+  }
+}
+
+/* Untuk layar sedang (tablet) */
+@media screen and (min-width: 601px) and (max-width: 1024px) {
+  .filter {
+    grid-template-columns: repeat(2, 1fr); /* Dua kolom */
+  }
+}
 
 /* ================= STATS ================= */
 
@@ -176,6 +206,11 @@ th{
   letter-spacing:.3px;
 }
 
+th.sticky{
+  top: 0;
+  z-index: 60; /* lebih tinggi dari th biasa */
+}
+
 /* ZEBRA */
 tbody tr:nth-child(even){
   background:#f8fafc;
@@ -188,8 +223,10 @@ tbody tr:hover{
 
 /* FREEZE LEFT */
 .sticky{
-  position:sticky;
+  position: sticky;
   color:white;
+  left: 0;
+  z-index: 50;
 }
 
 .col-op{ left:0; background:#334155; min-width:130px; z-index:40;}
@@ -238,6 +275,32 @@ tbody tr:hover{
   background:#ffedd5 !important;
 }
 
+#downloadBtn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  height: 42px;              /* samakan tinggi */
+  padding: 0 18px;           /* samakan horizontal padding */
+  border-radius: 10px;       /* samakan radius */
+
+  background: linear-gradient(135deg,#10b981,#059669);
+  color: #fff;
+  border: none;
+
+  font-size: 14px;           /* samakan font */
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+#downloadBtn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(16,185,129,.35);
+}
+
 </style>
 
 </head>
@@ -263,6 +326,9 @@ tbody tr:hover{
   <input id="search" placeholder="Cari OP / Customer / TOH / Produk / Status">
   <button id="refreshBtn" onclick="refreshData()">🔄 Refresh</button>
   <button id="spjBtn" onclick="goToSPJ()">📋 Dashboard SPJ</button>
+  <button id="downloadBtn" onclick="downloadReport()" disabled>
+  ⬇ Download Report
+</button>
 </div>
 
 <div class="stats" id="stats"></div>
@@ -390,6 +456,7 @@ function render(){
   monitor.innerHTML=html;
 
   updateStats(data);
+  document.getElementById("downloadBtn").disabled = data.length === 0;
 }
 
 /* STATS */
@@ -422,6 +489,62 @@ function refreshData(){
 
 function goToSPJ(){
   window.location.href = "https://script.google.com/macros/s/AKfycbzRYe2M1V7885vQBrrffUDTiMjyIsrzhsAkNByK0Z6iWNrlmdZ2ycBIgIdgFov3-RZ7/exec";
+}
+
+function downloadReport() {
+
+  const btn = document.getElementById("downloadBtn");
+  const selectedMonth = document.getElementById("month").value;
+
+  if (!selectedMonth) {
+    alert("Pilih bulan terlebih dahulu.");
+    return;
+  }
+
+  btn.classList.add("loading");
+  btn.innerText = "Downloading...";
+
+  google.script.run
+    .withSuccessHandler(function (file) {
+
+      btn.classList.remove("loading");
+      btn.innerText = "⬇ Download Report";
+
+      if (!file || !file.data) {
+        alert("Tidak ada data untuk di-download.");
+        return;
+      }
+
+      // Decode base64 ke binary
+      const byteCharacters = atob(file.data);
+      const byteNumbers = new Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: file.mimeType });
+
+      // Buat link download
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = file.fileName;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+
+    })
+    .withFailureHandler(function (err) {
+
+      btn.classList.remove("loading");
+      btn.innerText = "⬇ Download Report";
+      alert("Error: " + err.message);
+
+    })
+    .downloadNonRekonReport(selectedMonth);
 }
 
 </script>
